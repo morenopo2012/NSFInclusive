@@ -1,0 +1,34 @@
+# Ignore object files and shared libraries
+*.o
+*.so
+*.a
+
+# Ignore compiled binaries
+*.exe
+*.out
+*.bin
+
+# Ignore ROOT files and plots
+*.root
+*.pdf
+*.png
+
+# Ignore logs
+*.log
+*.err
+*.txt
+
+# Ignore backup or temp files
+*~
+*.swp
+
+# Ignore CMake and Make
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ignore environment files
+*.sh~
+setup.*
+

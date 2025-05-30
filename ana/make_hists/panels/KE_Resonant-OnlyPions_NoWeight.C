@@ -1,0 +1,514 @@
+#ifdef __CLING__
+#pragma cling optimize(0)
+#endif
+void KE()
+{
+//=========Macro generated from canvas: c/Stacked Histograms
+//=========  (Wed Dec  4 23:46:51 2024) by ROOT version 6.28/12
+   TCanvas *c = new TCanvas("c", "Stacked Histograms",0,0,800,600);
+   gStyle->SetOptStat(0);
+   gStyle->SetOptTitle(0);
+   c->SetHighLightColor(2);
+   c->Range(-375,-462.5963,2125,2841.663);
+   c->SetFillColor(0);
+   c->SetBorderMode(0);
+   c->SetBorderSize(2);
+   c->SetLeftMargin(0.15);
+   c->SetRightMargin(0.05);
+   c->SetTopMargin(0.05);
+   c->SetBottomMargin(0.14);
+   c->SetFrameBorderMode(0);
+   c->SetFrameBorderMode(0);
+   
+   THStack *hs = new THStack();
+   hs->SetName("hs");
+   hs->SetTitle("Stacked Histograms;Kinetic Energy (MeV);Events");
+   
+   TH1F *hs_stack_1 = new TH1F("hs_stack_1","Stacked Histograms",50,0,2000);
+   hs_stack_1->SetMinimum(0);
+   hs_stack_1->SetMaximum(2676.45);
+   hs_stack_1->SetDirectory(nullptr);
+   hs_stack_1->SetStats(0);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#000099");
+   hs_stack_1->SetLineColor(ci);
+   hs_stack_1->SetLineWidth(0);
+   hs_stack_1->GetXaxis()->SetTitle("Kinetic Energy (MeV)");
+   hs_stack_1->GetXaxis()->SetLabelFont(42);
+   hs_stack_1->GetXaxis()->SetLabelSize(0.04);
+   hs_stack_1->GetXaxis()->SetTitleSize(0.06);
+   hs_stack_1->GetXaxis()->SetTickLength(0.02);
+   hs_stack_1->GetXaxis()->SetTitleOffset(1);
+   hs_stack_1->GetXaxis()->SetTitleFont(42);
+   hs_stack_1->GetYaxis()->SetTitle("Events");
+   hs_stack_1->GetYaxis()->SetLabelFont(42);
+   hs_stack_1->GetYaxis()->SetLabelSize(0.04);
+   hs_stack_1->GetYaxis()->SetTitleSize(0.06);
+   hs_stack_1->GetYaxis()->SetTickLength(0.01);
+   hs_stack_1->GetYaxis()->SetTitleOffset(0.9);
+   hs_stack_1->GetYaxis()->SetTitleFont(42);
+   hs_stack_1->GetZaxis()->SetLabelFont(42);
+   hs_stack_1->GetZaxis()->SetLabelSize(0.04);
+   hs_stack_1->GetZaxis()->SetTitleSize(0.06);
+   hs_stack_1->GetZaxis()->SetTitleOffset(1);
+   hs_stack_1->GetZaxis()->SetTitleFont(42);
+   hs->SetHistogram(hs_stack_1);
+   
+   
+   TH1D *hist_fate_NC_stack_1 = new TH1D("hist_fate_NC_stack_1","KE - No Interaction (NS)",50,0,2000);
+   hist_fate_NC_stack_1->SetBinContent(0,512);
+   hist_fate_NC_stack_1->SetBinContent(1,212);
+   hist_fate_NC_stack_1->SetBinContent(2,165);
+   hist_fate_NC_stack_1->SetBinContent(3,133);
+   hist_fate_NC_stack_1->SetBinContent(4,121);
+   hist_fate_NC_stack_1->SetBinContent(5,136);
+   hist_fate_NC_stack_1->SetBinContent(6,128);
+   hist_fate_NC_stack_1->SetBinContent(7,170);
+   hist_fate_NC_stack_1->SetBinContent(8,193);
+   hist_fate_NC_stack_1->SetBinContent(9,174);
+   hist_fate_NC_stack_1->SetBinContent(10,229);
+   hist_fate_NC_stack_1->SetBinContent(11,238);
+   hist_fate_NC_stack_1->SetBinContent(12,241);
+   hist_fate_NC_stack_1->SetBinContent(13,213);
+   hist_fate_NC_stack_1->SetBinContent(14,158);
+   hist_fate_NC_stack_1->SetBinContent(15,127);
+   hist_fate_NC_stack_1->SetBinContent(16,124);
+   hist_fate_NC_stack_1->SetBinContent(17,91);
+   hist_fate_NC_stack_1->SetBinContent(18,106);
+   hist_fate_NC_stack_1->SetBinContent(19,67);
+   hist_fate_NC_stack_1->SetBinContent(20,67);
+   hist_fate_NC_stack_1->SetBinContent(21,78);
+   hist_fate_NC_stack_1->SetBinContent(22,60);
+   hist_fate_NC_stack_1->SetBinContent(23,45);
+   hist_fate_NC_stack_1->SetBinContent(24,33);
+   hist_fate_NC_stack_1->SetBinContent(25,45);
+   hist_fate_NC_stack_1->SetBinContent(26,36);
+   hist_fate_NC_stack_1->SetBinContent(27,24);
+   hist_fate_NC_stack_1->SetBinContent(28,39);
+   hist_fate_NC_stack_1->SetBinContent(29,17);
+   hist_fate_NC_stack_1->SetBinContent(30,16);
+   hist_fate_NC_stack_1->SetBinContent(31,9);
+   hist_fate_NC_stack_1->SetBinContent(32,13);
+   hist_fate_NC_stack_1->SetBinContent(33,14);
+   hist_fate_NC_stack_1->SetBinContent(34,12);
+   hist_fate_NC_stack_1->SetBinContent(35,19);
+   hist_fate_NC_stack_1->SetBinContent(36,7);
+   hist_fate_NC_stack_1->SetBinContent(37,8);
+   hist_fate_NC_stack_1->SetBinContent(38,8);
+   hist_fate_NC_stack_1->SetBinContent(39,4);
+   hist_fate_NC_stack_1->SetBinContent(40,4);
+   hist_fate_NC_stack_1->SetBinContent(41,1);
+   hist_fate_NC_stack_1->SetBinContent(42,1);
+   hist_fate_NC_stack_1->SetBinContent(43,5);
+   hist_fate_NC_stack_1->SetBinContent(44,3);
+   hist_fate_NC_stack_1->SetBinContent(45,1);
+   hist_fate_NC_stack_1->SetBinContent(46,2);
+   hist_fate_NC_stack_1->SetBinContent(47,2);
+   hist_fate_NC_stack_1->SetBinContent(48,4);
+   hist_fate_NC_stack_1->SetBinContent(50,2);
+   hist_fate_NC_stack_1->SetBinContent(51,15);
+   hist_fate_NC_stack_1->SetEntries(4132);
+   hist_fate_NC_stack_1->SetDirectory(nullptr);
+
+   ci = TColor::GetColor("#ff0000");
+   hist_fate_NC_stack_1->SetFillColor(ci);
+
+   ci = TColor::GetColor("#ff0000");
+   hist_fate_NC_stack_1->SetLineColor(ci);
+   hist_fate_NC_stack_1->GetXaxis()->SetLabelFont(42);
+   hist_fate_NC_stack_1->GetXaxis()->SetTitleOffset(1);
+   hist_fate_NC_stack_1->GetXaxis()->SetTitleFont(42);
+   hist_fate_NC_stack_1->GetYaxis()->SetLabelFont(42);
+   hist_fate_NC_stack_1->GetYaxis()->SetTitleFont(42);
+   hist_fate_NC_stack_1->GetZaxis()->SetLabelFont(42);
+   hist_fate_NC_stack_1->GetZaxis()->SetTitleOffset(1);
+   hist_fate_NC_stack_1->GetZaxis()->SetTitleFont(42);
+   hs->Add(hist_fate_NC_stack_1,"");
+   
+   TH1D *hist_fate_ChEx_stack_2 = new TH1D("hist_fate_ChEx_stack_2","KE - No ChEx (ChEx)",50,0,2000);
+   hist_fate_ChEx_stack_2->SetBinContent(0,661);
+   hist_fate_ChEx_stack_2->SetBinContent(1,100);
+   hist_fate_ChEx_stack_2->SetBinContent(2,115);
+   hist_fate_ChEx_stack_2->SetBinContent(3,168);
+   hist_fate_ChEx_stack_2->SetBinContent(4,193);
+   hist_fate_ChEx_stack_2->SetBinContent(5,162);
+   hist_fate_ChEx_stack_2->SetBinContent(6,137);
+   hist_fate_ChEx_stack_2->SetBinContent(7,130);
+   hist_fate_ChEx_stack_2->SetBinContent(8,124);
+   hist_fate_ChEx_stack_2->SetBinContent(9,91);
+   hist_fate_ChEx_stack_2->SetBinContent(10,65);
+   hist_fate_ChEx_stack_2->SetBinContent(11,32);
+   hist_fate_ChEx_stack_2->SetBinContent(12,37);
+   hist_fate_ChEx_stack_2->SetBinContent(13,26);
+   hist_fate_ChEx_stack_2->SetBinContent(14,17);
+   hist_fate_ChEx_stack_2->SetBinContent(15,3);
+   hist_fate_ChEx_stack_2->SetBinContent(16,8);
+   hist_fate_ChEx_stack_2->SetBinContent(17,4);
+   hist_fate_ChEx_stack_2->SetBinContent(18,1);
+   hist_fate_ChEx_stack_2->SetBinContent(19,14);
+   hist_fate_ChEx_stack_2->SetBinContent(20,13);
+   hist_fate_ChEx_stack_2->SetBinContent(23,2);
+   hist_fate_ChEx_stack_2->SetBinContent(26,1);
+   hist_fate_ChEx_stack_2->SetBinContent(27,4);
+   hist_fate_ChEx_stack_2->SetBinContent(50,1);
+   hist_fate_ChEx_stack_2->SetBinContent(51,3);
+   hist_fate_ChEx_stack_2->SetEntries(2112);
+   hist_fate_ChEx_stack_2->SetDirectory(nullptr);
+
+   ci = TColor::GetColor("#0000ff");
+   hist_fate_ChEx_stack_2->SetFillColor(ci);
+
+   ci = TColor::GetColor("#0000ff");
+   hist_fate_ChEx_stack_2->SetLineColor(ci);
+   hist_fate_ChEx_stack_2->GetXaxis()->SetLabelFont(42);
+   hist_fate_ChEx_stack_2->GetXaxis()->SetTitleOffset(1);
+   hist_fate_ChEx_stack_2->GetXaxis()->SetTitleFont(42);
+   hist_fate_ChEx_stack_2->GetYaxis()->SetLabelFont(42);
+   hist_fate_ChEx_stack_2->GetYaxis()->SetTitleFont(42);
+   hist_fate_ChEx_stack_2->GetZaxis()->SetLabelFont(42);
+   hist_fate_ChEx_stack_2->GetZaxis()->SetTitleOffset(1);
+   hist_fate_ChEx_stack_2->GetZaxis()->SetTitleFont(42);
+   hs->Add(hist_fate_ChEx_stack_2,"");
+   
+   TH1D *hist_fate_Elas_stack_3 = new TH1D("hist_fate_Elas_stack_3","KE - No Elas (Elas)",50,0,2000);
+   hist_fate_Elas_stack_3->SetBinContent(0,4312);
+   hist_fate_Elas_stack_3->SetBinContent(1,715);
+   hist_fate_Elas_stack_3->SetBinContent(2,905);
+   hist_fate_Elas_stack_3->SetBinContent(3,1177);
+   hist_fate_Elas_stack_3->SetBinContent(4,1148);
+   hist_fate_Elas_stack_3->SetBinContent(5,1268);
+   hist_fate_Elas_stack_3->SetBinContent(6,1059);
+   hist_fate_Elas_stack_3->SetBinContent(7,1058);
+   hist_fate_Elas_stack_3->SetBinContent(8,804);
+   hist_fate_Elas_stack_3->SetBinContent(9,569);
+   hist_fate_Elas_stack_3->SetBinContent(10,462);
+   hist_fate_Elas_stack_3->SetBinContent(11,397);
+   hist_fate_Elas_stack_3->SetBinContent(12,302);
+   hist_fate_Elas_stack_3->SetBinContent(13,226);
+   hist_fate_Elas_stack_3->SetBinContent(14,169);
+   hist_fate_Elas_stack_3->SetBinContent(15,181);
+   hist_fate_Elas_stack_3->SetBinContent(16,97);
+   hist_fate_Elas_stack_3->SetBinContent(17,84);
+   hist_fate_Elas_stack_3->SetBinContent(18,76);
+   hist_fate_Elas_stack_3->SetBinContent(19,71);
+   hist_fate_Elas_stack_3->SetBinContent(20,51);
+   hist_fate_Elas_stack_3->SetBinContent(21,35);
+   hist_fate_Elas_stack_3->SetBinContent(22,16);
+   hist_fate_Elas_stack_3->SetBinContent(23,33);
+   hist_fate_Elas_stack_3->SetBinContent(24,24);
+   hist_fate_Elas_stack_3->SetBinContent(25,20);
+   hist_fate_Elas_stack_3->SetBinContent(26,18);
+   hist_fate_Elas_stack_3->SetBinContent(27,18);
+   hist_fate_Elas_stack_3->SetBinContent(28,12);
+   hist_fate_Elas_stack_3->SetBinContent(29,4);
+   hist_fate_Elas_stack_3->SetBinContent(30,6);
+   hist_fate_Elas_stack_3->SetBinContent(31,10);
+   hist_fate_Elas_stack_3->SetBinContent(32,3);
+   hist_fate_Elas_stack_3->SetBinContent(33,2);
+   hist_fate_Elas_stack_3->SetBinContent(34,10);
+   hist_fate_Elas_stack_3->SetBinContent(35,1);
+   hist_fate_Elas_stack_3->SetBinContent(36,6);
+   hist_fate_Elas_stack_3->SetBinContent(40,1);
+   hist_fate_Elas_stack_3->SetBinContent(43,1);
+   hist_fate_Elas_stack_3->SetBinContent(45,4);
+   hist_fate_Elas_stack_3->SetBinContent(47,1);
+   hist_fate_Elas_stack_3->SetBinContent(50,4);
+   hist_fate_Elas_stack_3->SetEntries(15360);
+   hist_fate_Elas_stack_3->SetDirectory(nullptr);
+
+   ci = TColor::GetColor("#00ff00");
+   hist_fate_Elas_stack_3->SetFillColor(ci);
+
+   ci = TColor::GetColor("#00ff00");
+   hist_fate_Elas_stack_3->SetLineColor(ci);
+   hist_fate_Elas_stack_3->GetXaxis()->SetLabelFont(42);
+   hist_fate_Elas_stack_3->GetXaxis()->SetTitleOffset(1);
+   hist_fate_Elas_stack_3->GetXaxis()->SetTitleFont(42);
+   hist_fate_Elas_stack_3->GetYaxis()->SetLabelFont(42);
+   hist_fate_Elas_stack_3->GetYaxis()->SetTitleFont(42);
+   hist_fate_Elas_stack_3->GetZaxis()->SetLabelFont(42);
+   hist_fate_Elas_stack_3->GetZaxis()->SetTitleOffset(1);
+   hist_fate_Elas_stack_3->GetZaxis()->SetTitleFont(42);
+   hs->Add(hist_fate_Elas_stack_3,"");
+   
+   TH1D *hist_fate_Abs_stack_4 = new TH1D("hist_fate_Abs_stack_4","KE - No Abs (Abs)",50,0,2000);
+   hist_fate_Abs_stack_4->SetBinContent(0,3308);
+   hist_fate_Abs_stack_4->SetBinContent(1,570);
+   hist_fate_Abs_stack_4->SetBinContent(2,815);
+   hist_fate_Abs_stack_4->SetBinContent(3,878);
+   hist_fate_Abs_stack_4->SetBinContent(4,911);
+   hist_fate_Abs_stack_4->SetBinContent(5,942);
+   hist_fate_Abs_stack_4->SetBinContent(6,846);
+   hist_fate_Abs_stack_4->SetBinContent(7,620);
+   hist_fate_Abs_stack_4->SetBinContent(8,680);
+   hist_fate_Abs_stack_4->SetBinContent(9,542);
+   hist_fate_Abs_stack_4->SetBinContent(10,449);
+   hist_fate_Abs_stack_4->SetBinContent(11,433);
+   hist_fate_Abs_stack_4->SetBinContent(12,323);
+   hist_fate_Abs_stack_4->SetBinContent(13,377);
+   hist_fate_Abs_stack_4->SetBinContent(14,300);
+   hist_fate_Abs_stack_4->SetBinContent(15,273);
+   hist_fate_Abs_stack_4->SetBinContent(16,235);
+   hist_fate_Abs_stack_4->SetBinContent(17,206);
+   hist_fate_Abs_stack_4->SetBinContent(18,188);
+   hist_fate_Abs_stack_4->SetBinContent(19,143);
+   hist_fate_Abs_stack_4->SetBinContent(20,135);
+   hist_fate_Abs_stack_4->SetBinContent(21,124);
+   hist_fate_Abs_stack_4->SetBinContent(22,98);
+   hist_fate_Abs_stack_4->SetBinContent(23,69);
+   hist_fate_Abs_stack_4->SetBinContent(24,50);
+   hist_fate_Abs_stack_4->SetBinContent(25,61);
+   hist_fate_Abs_stack_4->SetBinContent(26,51);
+   hist_fate_Abs_stack_4->SetBinContent(27,45);
+   hist_fate_Abs_stack_4->SetBinContent(28,28);
+   hist_fate_Abs_stack_4->SetBinContent(29,31);
+   hist_fate_Abs_stack_4->SetBinContent(30,21);
+   hist_fate_Abs_stack_4->SetBinContent(31,18);
+   hist_fate_Abs_stack_4->SetBinContent(32,31);
+   hist_fate_Abs_stack_4->SetBinContent(33,12);
+   hist_fate_Abs_stack_4->SetBinContent(34,12);
+   hist_fate_Abs_stack_4->SetBinContent(35,10);
+   hist_fate_Abs_stack_4->SetBinContent(36,14);
+   hist_fate_Abs_stack_4->SetBinContent(37,7);
+   hist_fate_Abs_stack_4->SetBinContent(38,8);
+   hist_fate_Abs_stack_4->SetBinContent(39,15);
+   hist_fate_Abs_stack_4->SetBinContent(40,2);
+   hist_fate_Abs_stack_4->SetBinContent(41,6);
+   hist_fate_Abs_stack_4->SetBinContent(42,8);
+   hist_fate_Abs_stack_4->SetBinContent(43,2);
+   hist_fate_Abs_stack_4->SetBinContent(44,7);
+   hist_fate_Abs_stack_4->SetBinContent(46,1);
+   hist_fate_Abs_stack_4->SetBinContent(47,1);
+   hist_fate_Abs_stack_4->SetBinContent(48,1);
+   hist_fate_Abs_stack_4->SetBinContent(50,4);
+   hist_fate_Abs_stack_4->SetBinContent(51,9);
+   hist_fate_Abs_stack_4->SetEntries(13920);
+   hist_fate_Abs_stack_4->SetDirectory(nullptr);
+
+   ci = TColor::GetColor("#ff00ff");
+   hist_fate_Abs_stack_4->SetFillColor(ci);
+
+   ci = TColor::GetColor("#ff00ff");
+   hist_fate_Abs_stack_4->SetLineColor(ci);
+   hist_fate_Abs_stack_4->GetXaxis()->SetLabelFont(42);
+   hist_fate_Abs_stack_4->GetXaxis()->SetTitleOffset(1);
+   hist_fate_Abs_stack_4->GetXaxis()->SetTitleFont(42);
+   hist_fate_Abs_stack_4->GetYaxis()->SetLabelFont(42);
+   hist_fate_Abs_stack_4->GetYaxis()->SetTitleFont(42);
+   hist_fate_Abs_stack_4->GetZaxis()->SetLabelFont(42);
+   hist_fate_Abs_stack_4->GetZaxis()->SetTitleOffset(1);
+   hist_fate_Abs_stack_4->GetZaxis()->SetTitleFont(42);
+   hs->Add(hist_fate_Abs_stack_4,"");
+   
+   TH1D *hist_fate_PionP_stack_5 = new TH1D("hist_fate_PionP_stack_5","KE - No PionP (PionP)",50,0,2000);
+   hist_fate_PionP_stack_5->SetBinContent(0,18);
+   hist_fate_PionP_stack_5->SetBinContent(1,14);
+   hist_fate_PionP_stack_5->SetBinContent(2,24);
+   hist_fate_PionP_stack_5->SetBinContent(3,17);
+   hist_fate_PionP_stack_5->SetBinContent(4,30);
+   hist_fate_PionP_stack_5->SetBinContent(5,41);
+   hist_fate_PionP_stack_5->SetBinContent(6,25);
+   hist_fate_PionP_stack_5->SetBinContent(7,38);
+   hist_fate_PionP_stack_5->SetBinContent(8,45);
+   hist_fate_PionP_stack_5->SetBinContent(9,46);
+   hist_fate_PionP_stack_5->SetBinContent(10,50);
+   hist_fate_PionP_stack_5->SetBinContent(11,78);
+   hist_fate_PionP_stack_5->SetBinContent(12,78);
+   hist_fate_PionP_stack_5->SetBinContent(13,65);
+   hist_fate_PionP_stack_5->SetBinContent(14,77);
+   hist_fate_PionP_stack_5->SetBinContent(15,68);
+   hist_fate_PionP_stack_5->SetBinContent(16,66);
+   hist_fate_PionP_stack_5->SetBinContent(17,83);
+   hist_fate_PionP_stack_5->SetBinContent(18,65);
+   hist_fate_PionP_stack_5->SetBinContent(19,64);
+   hist_fate_PionP_stack_5->SetBinContent(20,50);
+   hist_fate_PionP_stack_5->SetBinContent(21,50);
+   hist_fate_PionP_stack_5->SetBinContent(22,65);
+   hist_fate_PionP_stack_5->SetBinContent(23,46);
+   hist_fate_PionP_stack_5->SetBinContent(24,30);
+   hist_fate_PionP_stack_5->SetBinContent(25,26);
+   hist_fate_PionP_stack_5->SetBinContent(26,34);
+   hist_fate_PionP_stack_5->SetBinContent(27,14);
+   hist_fate_PionP_stack_5->SetBinContent(28,11);
+   hist_fate_PionP_stack_5->SetBinContent(29,30);
+   hist_fate_PionP_stack_5->SetBinContent(30,10);
+   hist_fate_PionP_stack_5->SetBinContent(31,6);
+   hist_fate_PionP_stack_5->SetBinContent(32,9);
+   hist_fate_PionP_stack_5->SetBinContent(33,19);
+   hist_fate_PionP_stack_5->SetBinContent(34,7);
+   hist_fate_PionP_stack_5->SetBinContent(35,2);
+   hist_fate_PionP_stack_5->SetBinContent(36,9);
+   hist_fate_PionP_stack_5->SetBinContent(37,1);
+   hist_fate_PionP_stack_5->SetBinContent(39,1);
+   hist_fate_PionP_stack_5->SetBinContent(40,7);
+   hist_fate_PionP_stack_5->SetBinContent(42,1);
+   hist_fate_PionP_stack_5->SetBinContent(46,4);
+   hist_fate_PionP_stack_5->SetBinContent(50,1);
+   hist_fate_PionP_stack_5->SetBinContent(51,7);
+   hist_fate_PionP_stack_5->SetEntries(1432);
+   hist_fate_PionP_stack_5->SetDirectory(nullptr);
+
+   ci = TColor::GetColor("#00ffff");
+   hist_fate_PionP_stack_5->SetFillColor(ci);
+
+   ci = TColor::GetColor("#00ffff");
+   hist_fate_PionP_stack_5->SetLineColor(ci);
+   hist_fate_PionP_stack_5->GetXaxis()->SetLabelFont(42);
+   hist_fate_PionP_stack_5->GetXaxis()->SetTitleOffset(1);
+   hist_fate_PionP_stack_5->GetXaxis()->SetTitleFont(42);
+   hist_fate_PionP_stack_5->GetYaxis()->SetLabelFont(42);
+   hist_fate_PionP_stack_5->GetYaxis()->SetTitleFont(42);
+   hist_fate_PionP_stack_5->GetZaxis()->SetLabelFont(42);
+   hist_fate_PionP_stack_5->GetZaxis()->SetTitleOffset(1);
+   hist_fate_PionP_stack_5->GetZaxis()->SetTitleFont(42);
+   hs->Add(hist_fate_PionP_stack_5,"");
+   
+   TH1D *hist_fate_MultN_stack_6 = new TH1D("hist_fate_MultN_stack_6","KE - No MultN (MN)",50,0,2000);
+   hist_fate_MultN_stack_6->SetDirectory(nullptr);
+
+   ci = TColor::GetColor("#cccc00");
+   hist_fate_MultN_stack_6->SetFillColor(ci);
+
+   ci = TColor::GetColor("#cccc00");
+   hist_fate_MultN_stack_6->SetLineColor(ci);
+   hist_fate_MultN_stack_6->GetXaxis()->SetLabelFont(42);
+   hist_fate_MultN_stack_6->GetXaxis()->SetTitleOffset(1);
+   hist_fate_MultN_stack_6->GetXaxis()->SetTitleFont(42);
+   hist_fate_MultN_stack_6->GetYaxis()->SetLabelFont(42);
+   hist_fate_MultN_stack_6->GetYaxis()->SetTitleFont(42);
+   hist_fate_MultN_stack_6->GetZaxis()->SetLabelFont(42);
+   hist_fate_MultN_stack_6->GetZaxis()->SetTitleOffset(1);
+   hist_fate_MultN_stack_6->GetZaxis()->SetTitleFont(42);
+   hs->Add(hist_fate_MultN_stack_6,"");
+   
+   TH1D *hist_fate_KnockOut_stack_7 = new TH1D("hist_fate_KnockOut_stack_7","KE - KnockOut (KnockOut)",50,0,2000);
+   hist_fate_KnockOut_stack_7->SetDirectory(nullptr);
+
+   ci = TColor::GetColor("#ffcc00");
+   hist_fate_KnockOut_stack_7->SetFillColor(ci);
+
+   ci = TColor::GetColor("#ffcc00");
+   hist_fate_KnockOut_stack_7->SetLineColor(ci);
+   hist_fate_KnockOut_stack_7->GetXaxis()->SetLabelFont(42);
+   hist_fate_KnockOut_stack_7->GetXaxis()->SetTitleOffset(1);
+   hist_fate_KnockOut_stack_7->GetXaxis()->SetTitleFont(42);
+   hist_fate_KnockOut_stack_7->GetYaxis()->SetLabelFont(42);
+   hist_fate_KnockOut_stack_7->GetYaxis()->SetTitleFont(42);
+   hist_fate_KnockOut_stack_7->GetZaxis()->SetLabelFont(42);
+   hist_fate_KnockOut_stack_7->GetZaxis()->SetTitleOffset(1);
+   hist_fate_KnockOut_stack_7->GetZaxis()->SetTitleFont(42);
+   hs->Add(hist_fate_KnockOut_stack_7,"");
+   hs->Draw("hist");
+   
+   TLegend *leg = new TLegend(0.7,0.7,0.9,0.9,NULL,"brNDC");
+   leg->SetBorderSize(1);
+   leg->SetLineColor(1);
+   leg->SetLineStyle(1);
+   leg->SetLineWidth(1);
+   leg->SetFillColor(0);
+   leg->SetFillStyle(1001);
+   TLegendEntry *entry=leg->AddEntry("hist_fate_NC","NS","f");
+
+   ci = TColor::GetColor("#ff0000");
+   entry->SetFillColor(ci);
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#ff0000");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("hist_fate_ChEx","ChEx","f");
+
+   ci = TColor::GetColor("#0000ff");
+   entry->SetFillColor(ci);
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#0000ff");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("hist_fate_Elas","Elas","f");
+
+   ci = TColor::GetColor("#00ff00");
+   entry->SetFillColor(ci);
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#00ff00");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("hist_fate_Abs","Abs","f");
+
+   ci = TColor::GetColor("#ff00ff");
+   entry->SetFillColor(ci);
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#ff00ff");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("hist_fate_PionP","PionP","f");
+
+   ci = TColor::GetColor("#00ffff");
+   entry->SetFillColor(ci);
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#00ffff");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("hist_fate_MultN","MultN","f");
+
+   ci = TColor::GetColor("#cccc00");
+   entry->SetFillColor(ci);
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#cccc00");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("hist_fate_KnockOut","KnockOut","f");
+
+   ci = TColor::GetColor("#ffcc00");
+   entry->SetFillColor(ci);
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#ffcc00");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   leg->Draw();
+   c->Modified();
+   c->cd();
+   c->SetSelected(c);
+}

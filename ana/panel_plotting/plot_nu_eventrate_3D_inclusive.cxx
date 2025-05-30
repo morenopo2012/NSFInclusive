@@ -1,0 +1,282 @@
+//#include "myPlotStyle.h"
+#include "GridCanvas.h"
+#include "PlotUtils/MnvH2D.h"
+#include "PlotUtils/HyperDimLinearizer.h"//THIS HAS TO CHANGE TO BE INCLUDED IN THE MAKE FILE EVENTUALLY.
+
+// #include "../util/plot/plot.h"
+
+#include "TCanvas.h"
+#include "TLatex.h"
+#include "TLegend.h"
+#include "TStopwatch.h"
+#include "TEnv.h"
+#include "TChain.h"
+#include "TF2.h"
+#include "Math/DistFunc.h"
+#include "TGraphErrors.h"
+#include "TStyle.h"
+#include "TFile.h"
+#include "localColor.h"
+#include "Cintex/Cintex.h"
+
+#include "myPlotStyle.h"
+
+#include "plot.h"
+
+using namespace PlotUtils;
+
+void makePlots(bool doMultipliers, string location,  bool doRatio)
+{
+
+  ROOT::Cintex::Cintex::Enable();
+  myPlotStyle();
+  TH1::AddDirectory(false);
+  TH1::SetDefaultSumw2();
+  gStyle->SetErrorX(0);
+  gStyle->SetEndErrorSize(2);
+
+
+  vector<double> recoil3Dbins;
+  vector<double> pt3Dbins;
+  vector<double> pz3Dbins;
+
+  pt3Dbins.push_back(0.0);
+  //  pt3Dbins.push_back(0.075);//added ME
+  pt3Dbins.push_back(0.15);
+  pt3Dbins.push_back(0.25);//added ME
+  pt3Dbins.push_back(0.4);
+  pt3Dbins.push_back(0.7);//added ME
+  pt3Dbins.push_back(1.0);
+  //  pt3Dbins.push_back(1.5);//added ME
+  pt3Dbins.push_back(2.5);
+
+  pz3Dbins.push_back(1.5);
+  pz3Dbins.push_back(3.5);//added ME
+  pz3Dbins.push_back(8.0);
+  pz3Dbins.push_back(20.0);
+
+  for(int i=0;i<10;i++)recoil3Dbins.push_back(i*0.04);
+  for(int i=0;i<4;i++)recoil3Dbins.push_back(i*0.200+0.400);
+
+  recoil3Dbins.push_back(2);
+  recoil3Dbins.push_back(4);
+  recoil3Dbins.push_back(6);
+  recoil3Dbins.push_back(8);
+  recoil3Dbins.push_back(10);
+  recoil3Dbins.push_back(11);
+
+
+  std::vector<std::vector<double> > full3D;
+  full3D.push_back(recoil3Dbins);
+  full3D.push_back(pt3Dbins);
+  full3D.push_back(pz3Dbins);
+
+  
+  HyperDimLinearizer *my3d = new HyperDimLinearizer(full3D,0);
+
+
+
+
+  //three files 1-track, 2+track, N-track
+  //CV
+  //  TFile f1(Form("%s_CV/MuonEventSelection_MakeFlux-1_Multiplicity-1_Sample-Signal_CombinedPlaylists.root",location.c_str()));//1track
+  //  TFile f2(Form("%s_CV/MuonEventSelection_MakeFlux-1_Multiplicity-2_Sample-Signal_CombinedPlaylists.root",location.c_str()));//2track
+  TFile f3(Form("%s_CV/MuonEventSelection_MakeFlux-1_Multiplicity-0_Sample-Signal_CombinedPlaylists.root",location.c_str()));//Ntrack
+  //CV without low recoil tune
+  //  TFile f4(Form("%s_pion_rpa/MuonEventSelection_MakeFlux-1_Multiplicity-0_Sample-Signal_CombinedPlaylists.root",location.c_str()));//NTrack
+  //Constraint File
+  //  TFile f5(Form("%s_CV/SideBand3D_CombinedPlaylists.root",location.c_str()));
+
+  //need pzmuptmu
+  MnvH2D* mcMnv=(MnvH2D*)f3.Get("h_pzptrec_mc");//Get from N track
+  MnvH2D* dataMnv = (MnvH2D*)f3.Get("h_pzptrec_data");//Get from N track
+  //  MnvH2D* SingleTrackMnv = (MnvH2D*)f1.Get("h_pzptrec_data");//Get from 1 track
+  //  MnvH2D* MultiTrackMnv = (MnvH2D*)f2.Get("h_pzptrec_data");//Get from 2+ track
+  //  MnvH2D* SingleTrackMCMnv = (MnvH2D*)f1.Get("h_pzptrec_mc");//Get from 1 track
+  //  MnvH2D* MultiTrackMCMnv = (MnvH2D*)f2.Get("h_pzptrec_mc");//Get from 2+ track
+
+  MnvH2D* mcMnv_qe = (MnvH2D*)f3.Get("h_pzptrec_qe");//Get from N track
+  MnvH2D* mcMnv_res = (MnvH2D*)f3.Get("h_pzptrec_res");//Get from N track
+  MnvH2D* mcMnv_true_dis = (MnvH2D*)f3.Get("h_pzptrec_true_dis");//Get from N track
+  MnvH2D* mcMnv_sis_dis = (MnvH2D*)f3.Get("h_pzptrec_sis");//Get from N track
+  MnvH2D* mcMnv_2p2h = (MnvH2D*)f3.Get("h_pzptrec_2p2h");//Get from N track
+  MnvH2D* mcMnv_oth = (MnvH2D*)f3.Get("h_pzptrec_oth");//Get from N track
+  MnvH2D* mcMnv_NC = (MnvH2D*)f3.Get("h_pzptrec_NC");//Get from N track
+  
+
+  std::vector<TH2D*> dataStat = my3d->Get2DHistos(dataMnv,false);
+  std::vector<TH2D*> data = my3d->Get2DHistos(dataMnv,true);
+  std::vector<TH2D*> mc = my3d->Get2DHistos(mcMnv,false);
+  std::vector<TH2D*> mc_qe = my3d->Get2DHistos(mcMnv_qe,false);
+  std::vector<TH2D*> mc_res = my3d->Get2DHistos(mcMnv_res,false);
+  std::vector<TH2D*> mc_true_dis = my3d->Get2DHistos(mcMnv_true_dis,false);
+  std::vector<TH2D*> mc_sis_dis = my3d->Get2DHistos(mcMnv_sis_dis,false);
+  std::vector<TH2D*> mc_2p2h = my3d->Get2DHistos(mcMnv_2p2h,false);
+  std::vector<TH2D*> mc_oth = my3d->Get2DHistos(mcMnv_oth,false);
+  std::vector<TH2D*> mc_NC = my3d->Get2DHistos(mcMnv_NC,false);
+
+
+  mcMnv_qe->Add(mcMnv_2p2h);
+
+
+  for(int i=1;i<pz3Dbins.size();i++){
+
+    double pzwidth = pz3Dbins[i]-pz3Dbins[i-1];
+
+    dataStat[i]->Scale(1e-5/pzwidth,"width");
+    data[i]->Scale(1e-5/pzwidth,"width");
+    mc[i]->Scale(1e-5/pzwidth,"width");
+    mc_qe[i]->Scale(1e-5/pzwidth,"width");
+    mc_res[i]->Scale(1e-5/pzwidth,"width");
+    mc_true_dis[i]->Scale(1e-5/pzwidth,"width");
+    mc_sis_dis[i]->Scale(1e-5/pzwidth,"width");
+    //    mc_2p2h[i]->Scale(1e-5/pzwidth,"width");
+    mc_oth[i]->Scale(1e-5/pzwidth,"width");
+    mc_NC[i]->Scale(1e-5/pzwidth,"width");
+
+
+    if(doRatio){
+
+    dataStat[i]->Divide(mc[i]);
+    data[i]->Divide(mc[i]);
+    mc_qe[i]->Divide(mc[i]);
+    mc_res[i]->Divide(mc[i]);
+    mc_true_dis[i]->Divide(mc[i]);
+    mc_sis_dis[i]->Divide(mc[i]);
+    //    mc_2p2h[i]->Divide(mc[i]);
+    mc_oth[i]->Divide(mc[i]);
+    mc_NC[i]->Divide(mc[i]);
+    mc[i]->Divide(mc[i]);
+
+    }
+    
+
+    // These line and marker styles will be propagated to the 1D plots
+    vector<int> mycolors = getColors(2);
+    vector<int> mycolors2 = getColors(1);
+    mc[i]->SetLineColor(kRed);
+    mc[i]->SetLineWidth(2);
+    
+    //need to add signal and bkg colors
+    mc_qe[i]->SetLineColor(mycolors[3]);
+    mc_res[i]->SetLineColor(mycolors[5]);
+    mc_true_dis[i]->SetLineColor(kViolet-3);
+    mc_sis_dis[i]->SetLineColor(mycolors[4]);
+    //    mc_2p2h[i]->SetLineColor(mycolors[7]);
+    mc_oth[i]->SetLineColor(mycolors[8]);
+    mc_NC[i]->SetLineColor(mycolors[7]);
+    //need to add 1track and 2 track
+    
+    // These line and marker styles will be propagated to the 1D plots
+    data[i]->SetMarkerStyle(kFullCircle);
+    data[i]->SetMarkerSize(0.7);
+    data[i]->SetLineColor(kBlack);
+    data[i]->SetLineWidth(2);
+    
+    dataStat[i]->SetMarkerStyle(1);
+    dataStat[i]->SetLineColor(kBlack);
+    dataStat[i]->SetLineWidth(2);
+    
+    
+    
+    // Make a list of the histograms we want to draw, along with the
+    // draw options we want to use for them. You can add "graph" to the
+    // draw options if you want the histogram to be converted to a graph
+    // and then drawn. In that case the draw options are interpreted as
+    // options to TGraphErrors::Draw().
+    //
+    // I don't know what happens if you put a "graph" first in the list,
+    // so don't do that. Make sure the first item doesn't have "graph"
+    // in its options
+    std::vector<std::pair<TH2*, const char*> > histAndOpts;
+    histAndOpts.push_back(std::make_pair(mc[i],       "hist"));
+    
+    histAndOpts.push_back(std::make_pair(mc_qe[i],       "hist"));
+    histAndOpts.push_back(std::make_pair(mc_res[i],       "hist"));
+    histAndOpts.push_back(std::make_pair(mc_true_dis[i],       "hist"));
+    histAndOpts.push_back(std::make_pair(mc_sis_dis[i],       "hist"));
+    //    histAndOpts.push_back(std::make_pair(mc_2p2h[i],       "hist"));
+    histAndOpts.push_back(std::make_pair(mc_oth[i],       "hist"));
+    histAndOpts.push_back(std::make_pair(mc_NC[i],       "hist"));
+    histAndOpts.push_back(std::make_pair(dataStat[i], "graph e"));
+    histAndOpts.push_back(std::make_pair(data[i],     "graph ep"));
+    
+    
+    
+    // ----------------------------------------------------------------------------------
+    //
+    // First make pt in bins of pz
+    
+    // Values to multiply each bin by to get them on a similar range
+    vector<double> multipliers = GetScales(histAndOpts, true, 5,0.75);
+    GridCanvas* gc = plotYAxis1D(histAndOpts,"P_{t} (GeV)","Vis. E (GeV)", doMultipliers ? &multipliers[0] : NULL);
+    // Set the y range manually. Can also use gc->Remax() to guess automatically
+    if(doRatio) gc->SetYLimits(0,1.99);
+    else gc->SetYLimits(0, 5);
+    gc->SetYTitle("Event Rate(x10^{-5}) per GeV^{3}");
+    gc->Modified();
+    // Example of adding a legend. The co-ordinate system is NDC on the
+    // entire canvas, ie (0,0) in the bottom left corner of the canvas
+    // (not the individual pad), and (1,1) in the top right
+    TLegend* leg=new TLegend(0.7, 0.1, 0.9, 0.3);
+    leg->SetFillStyle(0);
+    leg->SetBorderSize(0);
+    leg->SetTextSize(0.03);
+    leg->AddEntry(data[i], "MINERvA data", "lpe");
+    leg->AddEntry(mc[i], "MINERvA Tune", "l");
+    leg->AddEntry(mc_qe[i],"QE","l");
+    leg->AddEntry(mc_res[i],"Resonant","l");
+    leg->AddEntry(mc_true_dis[i],"True DIS","l");    
+    leg->AddEntry(mc_sis_dis[i],"Soft DIS","l");
+    //    leg->AddEntry(mc_2p2h[i],"2p2h","l");
+    leg->AddEntry(mc_oth[i],"CC Other","l");
+    leg->AddEntry(mc_NC[i],"Backgrounds","l");
+        
+    
+
+    TLatex mytex;
+    mytex.SetTextSize(0.05);
+    string mystring =     Form("%.2f < P_{||} [GeV] < %.2f",pz3Dbins[i-1],pz3Dbins[i]);
+    mytex.DrawLatex(0.35,0.96,mystring.c_str());    
+    leg->Draw("SAME");
+    gc->Print(doMultipliers ? Form("nu-2d-evtrate-model-pt-multiplier-bin-%d.eps",i) : Form("nu-2d-evtrate-model-pt-bin-%d.eps",i));
+    gc->Print(doMultipliers ? Form("nu-2d-evtrate-model-pt-multiplier-bin-%d.png",i) : Form("nu-2d-evtrate-model-pt-bin-%d.png",i));
+    gc->Print(doMultipliers ? Form("nu-2d-evtrate-model-pt-multiplier-bin-%d.C",i) : Form("nu-2d-evtrate-model-pt-bin-%d.C",i));
+  
+    
+    // ----------------------------------------------------------------------------------
+    //
+    // Now make pz in bins of pt. It's all the same
+    
+    // Values to multiply each bin by to get them on a similar range
+    vector<double> multipliers2 = GetScales(histAndOpts, true, 5,0.75);
+    
+    // plotXAxis1D fiddles the x axis values to squash up the tail so it
+    // doesn't take up all the horizontal space.
+    GridCanvas* gc2 = plotXAxis1D_ReducedXRange(histAndOpts,"Visible Energy (GeV)","P_{t} (GeV)", 0,2.0,doMultipliers ? &multipliers2[0] : NULL);
+
+    mytex.DrawLatex(0.35,0.96,mystring.c_str());
+    if(doRatio) gc2->SetYLimits(0,1.99);
+    else gc2->SetYLimits(0, 5);
+    gc2->SetYTitle("Event Rate(x10^{-5}) per GeV^{3}");
+    gc2->Modified();
+    gc2->Print(doMultipliers ? Form("nu-2d-evtrate-model-pz-multiplier-bin-%d.eps",i) : Form("nu-2d-evtrate-model-pz-bin-%d.eps",i));
+    gc2->Print(doMultipliers ? Form("nu-2d-evtrate-model-pz-multiplier-bin-%d.png",i) : Form("nu-2d-evtrate-model-pz-bin-%d.png",i));
+    gc2->Print(doMultipliers ? Form("nu-2d-evtrate-model-pz-multiplier-bin-%d.C",i) : Form("nu-2d-evtrate-model-pz-bin-%d.C",i));
+  }
+}
+
+int main(int argc, char* argv[])
+{
+
+  string location = argv[1];
+  string s_ratio = argv[2];
+
+  bool doRatio = s_ratio=="1" ? true:false;
+  //multipliers
+  makePlots(true,location,false);
+  //standard
+  makePlots(false,location,doRatio);
+
+  return 0;
+}

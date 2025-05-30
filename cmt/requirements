@@ -1,0 +1,19 @@
+package NSFNukeCCInclusive
+version ${MINERVA_RELEASE}
+
+
+#==============================================================================
+
+use NSFNukeCCInclusive      v*     Ana
+
+#==============================================================================
+#==============================================================================
+private
+
+set NUKECCSRC_ANA "${NUKECCSRCROOT}/ana_common" 
+set MY_NSFNUKECC "${NSFNUKECCINCLUSIVEROOT}/ana"
+set NUKECCSRC_INCLUDE_PATH "$(includes)" 
+set HISTS "/minerva/data/users/zdar/NukeHists/" 
+
+
+end_private

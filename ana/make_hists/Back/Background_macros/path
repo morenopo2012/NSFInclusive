@@ -1,0 +1,6 @@
+export NUKECCSRCROOT=/minerva/app/users/zdar/cmtuser/Minerva_v22r1p1_MADNew/Ana/NSFNukeCCInclusive/NUKECCSRC/
+export NUKECCSRC_ANA=${NUKECCSRCROOT}/ana_common
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/minerva/app/users/zdar/cmtuser/Minerva_v22r1p1_MADNew/Ana/NSFNukeCCInclusive/NUKECCSRC/ana_common/src
+export NUKECCINCLUSIVEROOT=/minerva/app/users/zdar/cmtuser/Minerva_v22r1p1_MADNew/Ana/NSFNukeCCInclusive
+export MY_NSFNUKECC=${NUKECCINCLUSIVEROOT}/ana
+

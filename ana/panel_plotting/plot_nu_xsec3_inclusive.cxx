@@ -1,0 +1,565 @@
+
+//#include "myPlotStyle.h"
+#include "GridCanvas.h"
+#include "PlotUtils/MnvH2D.h"
+#include "PlotUtils/HyperDimLinearizer.h"//THIS HAS TO CHANGE TO BE INCLUDED IN THE MAKE FILE EVENTUALLY.
+// #include "../util/plot/plot.h"
+
+
+#include "TCanvas.h"
+#include "TLatex.h"
+#include "TLegend.h"
+#include "TStopwatch.h"
+#include "TEnv.h"
+#include "TChain.h"
+#include "TF2.h"
+#include "Math/DistFunc.h"
+#include "TGraphErrors.h"
+#include "TStyle.h"
+#include "TFile.h"
+//#include "localColor.h"
+#include "PlotUtils/MnvColors.h"
+#include "Cintex/Cintex.h"
+
+#include "myPlotStyle.h"
+
+#include "plot.h"
+
+using namespace PlotUtils;
+void makePlots(bool doMultipliers, string location, bool doLog, bool withlowrecoilremoved, bool withresfsi, bool withqefsi, bool withresisi, bool doRecoilFit, bool doRatio, bool doZoom, string iter, bool pzptrec)
+{
+  cout << "running with " << withlowrecoilremoved << "\t" <<withresfsi << "\t" << withqefsi << "\t" << doRecoilFit << "\t" << doRatio << endl;
+  cout << "I am running in pzptrecmode = " << pzptrec << endl;
+  ROOT::Cintex::Cintex::Enable();
+  myPlotStyle();
+  TH1::AddDirectory(false);
+  TH1::SetDefaultSumw2();
+  gStyle->SetErrorX(0);
+  gStyle->SetEndErrorSize(2);
+
+  string filelabel1 = "pzptreco";
+  string filelabel2 = "big3d";
+  string variableset = "pzptrec";
+  string xaxislabel = "#nu (GeV)";
+  string yaxislabel = "P_{t} (GeV/c)";
+  string zaxislabel = "P_{||} (GeV/c)";
+  string yaxislong = "Muon Transverse Momentum (GeV/c)";
+  string crosssectionlabel = "d^{3}#sigma/dp_{T}dp_{||}d#nu (x10^{-39} cm^{2}/GeV^{3}/c^{2}/Nucleon)";
+  
+  if(!pzptrec){
+    filelabel1 = "enuproxyE";
+    filelabel2 = "enuproxyE";
+    variableset = "enuproxyE";
+    xaxislabel = "#Sigma T_{p} (GeV)";
+    //xaxislabel = "E_{#nu}^{NOvA} - E_{#mu} (GeV)";
+    yaxislabel = "q_{0}^{QE} (GeV)";
+    //yaxislabel = "E_{#nu}^{T2K} - E_{#mu} (GeV)";
+    zaxislabel = "E_{#mu} (GeV)";
+    yaxislong = yaxislabel;
+    crosssectionlabel = "d^{3}#sigma/dq_{0}^{QE}dE_{#mu}d#SigmaT_{p} (x10^{-39} cm^{2}/GeV^{3}/Nucleon)";
+  }
+    
+
+
+  
+  TFile f1(Form("%s_CV/CrossSection_per_nucleon_3D_%s_iterations_%s_CombinedPlaylists.root_%s.root",location.c_str(),filelabel1.c_str(),iter.c_str(),filelabel2.c_str()));//final
+  TFile f2(Form("%s_pion_rpa/CrossSection_per_nucleon_3D_%s_iterations_1_CombinedPlaylists.root_%s.root",location.c_str(),filelabel1.c_str(),filelabel2.c_str()));//no recoil additions//only using for prediction -> 1 iter is fine.
+
+  MnvH2D* dataMnv=(MnvH2D*)f1.Get(Form("h_%s_data_nobck_unfold_effcor_cross_section",variableset.c_str()));
+  MnvH2D* mcMnv=(MnvH2D*)f1.Get(Form("h_%s_mc_nobck_unfold_effcor_cross_section",variableset.c_str()));
+
+  //  dataMnv->PopVertErrorBand("GENIE_FrElas_N");
+  dataMnv->PopVertErrorBand("GENIE_Theta_Delta2Npi");
+  dataMnv->PopLatErrorBand("Proton_Response");
+  dataMnv->PopLatErrorBand("EM_Response");
+  dataMnv->PopLatErrorBand("Pion_Response");
+  dataMnv->PopLatErrorBand("Other_Response");
+  dataMnv->PopLatErrorBand("Muon_Response");
+
+  //  dataMnv->PopVertErrorBand("GENIE_NormCCQE");
+  //  dataMnv->PopVertErrorBand("GENIE_MaCCQEshape");
+
+
+  //Model Component
+  MnvH2D* mcMnv_qe = (MnvH2D*)f1.Get(Form("h_%s_cross_section_qe",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_res = (MnvH2D*)f1.Get(Form("h_%s_cross_section_res",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_dis_sis = (MnvH2D*)f1.Get(Form("h_%s_cross_section_dis_sis",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_dis_dis = (MnvH2D*)f1.Get(Form("h_%s_cross_section_dis_dis",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_2p2h = (MnvH2D*)f1.Get(Form("h_%s_cross_section_2p2h",variableset.c_str()));//Get from N track
+
+  mcMnv_qe->Add(mcMnv_2p2h);
+
+  /*
+  MnvH2D* mcMnv_2p2h_norecoil = (MnvH2D*)f2.Get(Form("h_%s_cross_section_2p2h",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_2p2h_norecoil_full = (MnvH2D*)f2.Get(Form("h_%s_cross_section",variableset.c_str()));//Get from N track
+
+  MnvH2D* mcMnv_qe_proton_fsi = (MnvH2D*)f1.Get(Form("h_%s_cross_section_qe_protonfsi",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_qe_neutron_fsi = (MnvH2D*)f1.Get(Form("h_%s_cross_section_qe_neutronfsi",variableset.c_str()));//Get from N track
+
+  MnvH2D* mcMnv_res_proton_fsi = (MnvH2D*)f1.Get(Form("h_%s_cross_section_res_protonfsi",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_res_neutron_fsi = (MnvH2D*)f1.Get(Form("h_%s_cross_section_res_neutronfsi",variableset.c_str()));//Get from N track
+
+  MnvH2D* mcMnv_res_proton_isi = (MnvH2D*)f1.Get(Form("h_%s_cross_section_res_protonisi",variableset.c_str()));//Get from N track
+  MnvH2D* mcMnv_res_neutron_isi = (MnvH2D*)f1.Get(Form("h_%s_cross_section_res_neutronisi",variableset.c_str()));//Get from N track
+
+  MnvH2D* mcMnv_2p2h_nntune = new MnvH2D(*mcMnv->GetVertErrorBand("Low_Recoil_2p2h_Tune")->GetHist(0));
+  MnvH2D* mcMnv_2p2h_nptune = new MnvH2D(*mcMnv->GetVertErrorBand("Low_Recoil_2p2h_Tune")->GetHist(1));
+  MnvH2D* mcMnv_2p2h_qetune = new MnvH2D(*mcMnv->GetVertErrorBand("Low_Recoil_2p2h_Tune")->GetHist(2));
+  */
+
+
+  //  MnvH2D* nomGenieMnv = (MnvH2D*)f2.Get(Form("h_%s_mc_nobck_unfold_effcor_cross_section",variableset.c_str()));
+  //  MnvH2D* bestGenieMnv = (MnvH2D*)f3.Get(Form("h_%s_mc_nobck_unfold_effcor_cross_section",variableset.c_str()));
+ 
+  vector<double> recoil3Dbins;
+  vector<double> pt3Dbins;
+  vector<double> pz3Dbins;
+
+
+  //Finer version
+  pt3Dbins.push_back(0.0);
+  pt3Dbins.push_back(0.075);//added
+  pt3Dbins.push_back(0.15);
+  pt3Dbins.push_back(0.25);
+  pt3Dbins.push_back(0.325);//added
+  pt3Dbins.push_back(0.4);
+  pt3Dbins.push_back(0.475);//added
+  pt3Dbins.push_back(0.55);
+  pt3Dbins.push_back(0.7);
+  pt3Dbins.push_back(0.85);
+  pt3Dbins.push_back(1.0);
+  //  pt3Dbins.push_back(1.25);
+  //  pt3Dbins.push_back(1.5);
+  pt3Dbins.push_back(2.5);
+
+
+  pz3Dbins.push_back(1.5);
+  pz3Dbins.push_back(3.5);//added ME
+  //These were added to fix unfolding
+  pz3Dbins.push_back(4.5);//fix unf
+  pz3Dbins.push_back(7.0);//fix unf
+  pz3Dbins.push_back(8.0);
+  //These are added to fix unfolding
+  pz3Dbins.push_back(10.0);//fix unf
+  pz3Dbins.push_back(20.0);
+
+
+
+
+  recoil3Dbins.push_back(0);
+  recoil3Dbins.push_back(0.06);
+  recoil3Dbins.push_back(0.17);
+  recoil3Dbins.push_back(0.34);
+  recoil3Dbins.push_back(0.6);
+  recoil3Dbins.push_back(0.98);
+  recoil3Dbins.push_back(1.56);
+  recoil3Dbins.push_back(2.34);
+  recoil3Dbins.push_back(3.3);
+  recoil3Dbins.push_back(4.49);
+  //  recoil3Dbins.push_back(5.95);
+  recoil3Dbins.push_back(7.79);
+  //  recoil3Dbins.push_back(10.01);
+  recoil3Dbins.push_back(12.63);
+  //  recoil3Dbins.push_back(15.75);
+  recoil3Dbins.push_back(19.55);
+  //  recoil3Dbins.push_back(24.11);
+  recoil3Dbins.push_back(29.63);
+  //  recoil3Dbins.push_back(36.22);
+  recoil3Dbins.push_back(50.0);
+
+  
+
+
+
+  std::vector<std::vector<double> > temp_full3D;
+  temp_full3D.push_back(recoil3Dbins);
+  temp_full3D.push_back(pt3Dbins);
+  temp_full3D.push_back(pz3Dbins);
+
+  std::vector<std::vector<double> > temp_enuproxyE;
+  temp_enuproxyE.push_back(recoil3Dbins);
+  temp_enuproxyE.push_back(recoil3Dbins);
+  temp_enuproxyE.push_back(pz3Dbins);
+
+  std::vector<std::vector<double> > full3D;
+  if(pzptrec) full3D = temp_full3D;
+  else full3D = temp_enuproxyE;
+
+  
+  
+  HyperDimLinearizer *my3d = new HyperDimLinearizer(full3D,0);
+
+  std::cout << "Starting up getting the projections" << std::endl;
+  std::vector<TH2D*> dataresults = my3d->Get2DHistos(dataMnv,true);
+  std::vector<TH2D*> dataresults_statonly = my3d->Get2DHistos(dataMnv,false);
+  std::vector<TH2D*> mcresults = my3d->Get2DHistos(mcMnv,false);
+  std::cout << "Starting up getting the projections of the subcomponents" << std::endl;
+  //  std::vector<TH2D*> mcresults_2p2h = my3d->Get2DHistos(mcMnv_2p2h,false);
+  std::vector<TH2D*> mcresults_qe = my3d->Get2DHistos(mcMnv_qe,false);
+  std::vector<TH2D*> mcresults_res = my3d->Get2DHistos(mcMnv_res,false);
+  std::vector<TH2D*> mcresults_dis_dis = my3d->Get2DHistos(mcMnv_dis_dis,false);
+  std::vector<TH2D*> mcresults_dis_sis = my3d->Get2DHistos(mcMnv_dis_sis,false);
+  /*
+  std::vector<TH2D*> mcresults_2p2h_norecoil = my3d->Get2DHistos(mcMnv_2p2h_norecoil,false);
+  std::vector<TH2D*> mcresults_2p2h_norecoil_full = my3d->Get2DHistos(mcMnv_2p2h_norecoil_full,false);
+
+  std::vector<TH2D*> mcresults_qe_proton_fsi = my3d->Get2DHistos(mcMnv_qe_proton_fsi,false);
+  std::vector<TH2D*> mcresults_qe_neutron_fsi = my3d->Get2DHistos(mcMnv_qe_neutron_fsi,false);
+
+  std::vector<TH2D*> mcresults_res_proton_fsi = my3d->Get2DHistos(mcMnv_res_proton_fsi,false);
+  std::vector<TH2D*> mcresults_res_neutron_fsi = my3d->Get2DHistos(mcMnv_res_neutron_fsi,false);
+
+  std::vector<TH2D*> mcresults_res_proton_isi = my3d->Get2DHistos(mcMnv_res_proton_isi,false);
+  std::vector<TH2D*> mcresults_res_neutron_isi = my3d->Get2DHistos(mcMnv_res_neutron_isi,false);
+
+  std::vector<TH2D*> mcresults_2p2h_nptune = my3d->Get2DHistos(mcMnv_2p2h_nptune,false);
+  std::vector<TH2D*> mcresults_2p2h_nntune = my3d->Get2DHistos(mcMnv_2p2h_nntune,false);
+  std::vector<TH2D*> mcresults_2p2h_qetune = my3d->Get2DHistos(mcMnv_2p2h_qetune,false);
+  */
+
+
+  cout << "I found " << mcresults.size() << " histograms to work with " << endl;
+  for(unsigned int i=1;i<pz3Dbins.size();i++){
+    double pzwidth = pz3Dbins[i]-pz3Dbins[i-1];
+    dataresults[i]->Scale(1e39/pzwidth,"width");
+    dataresults_statonly[i]->Scale(1e39/pzwidth,"width");
+    mcresults[i]->Scale(1e39/pzwidth,"width");
+    //    mcresults_2p2h[i]->Scale(1e39/pzwidth,"width");
+    //    mcresults_2p2h_norecoil[i]->Scale(1e39/pzwidth,"width");
+    //    mcresults_2p2h_norecoil_full[i]->Scale(1e39/pzwidth,"width");
+    mcresults_qe[i]->Scale(1e39/pzwidth,"width");
+    mcresults_res[i]->Scale(1e39/pzwidth,"width");
+    mcresults_dis_dis[i]->Scale(1e39/pzwidth,"width");
+    mcresults_dis_sis[i]->Scale(1e39/pzwidth,"width");
+    /*
+    mcresults_qe_proton_fsi[i]->Scale(1e39/pzwidth,"width");
+    mcresults_qe_neutron_fsi[i]->Scale(1e39/pzwidth,"width");
+    mcresults_res_proton_fsi[i]->Scale(1e39/pzwidth,"width");
+    mcresults_res_neutron_fsi[i]->Scale(1e39/pzwidth,"width");
+
+    mcresults_res_proton_isi[i]->Scale(1e39/pzwidth,"width");
+    mcresults_res_neutron_isi[i]->Scale(1e39/pzwidth,"width");
+
+    mcresults_2p2h_nptune[i]->Scale(1e39/pzwidth,"width");
+    mcresults_2p2h_nntune[i]->Scale(1e39/pzwidth,"width");
+    mcresults_2p2h_qetune[i]->Scale(1e39/pzwidth,"width");
+    */
+  }
+
+
+  TFile *output2D = new TFile("Inclusive_3D_Projections.root","RECREATE");
+  
+  for(unsigned int i=1;i<pz3Dbins.size();i++){
+    dataresults[i]->Write(Form("h_%s_bin_%d_data",variableset.c_str(),i));
+    mcresults[i]->Write(Form("h_%s_bin_%d_mc",variableset.c_str(),i));
+  }
+  output2D->Close();
+    
+
+
+  //  vector<int> mycolors = getColors(2);
+  //  vector<int> mycolors2 = getColors(1);
+
+  vector<int> mycolors = MnvColors::GetColors(9);
+ vector<int> mycolors2 = MnvColors::GetColors(6);
+  for(unsigned int i=1;i<pz3Dbins.size();i++){//skip underflow and overflow pz bins
+    cout << "DOING BIN " << i << endl;
+    // Get the data histogram with stat error and with total error
+    // separately so we can plot them both for inner and outer ticks
+    //  TH2* nomGenie=new TH2D(nomGenieMnv->GetCVHistoWithStatError());
+    //  TH2* bestGenie = new TH2D(bestGenieMnv->GetCVHistoWithStatError());
+    /*
+      TH2* mc_qe = new TH2D(mcMnv_qe->GetCVHistoWithStatError());
+      TH2* mc_res = new TH2D(mcMnv_res->GetCVHistoWithStatError());
+      TH2* mc_dis = new TH2D(mcMnv_dis->GetCVHistoWithStatError());
+      TH2* mc_2p2h = new TH2D(mcMnv_2p2h->GetCVHistoWithStatError());
+      TH2* mc_2p2h_no_lowrec = new TH2D(mcMnv_2p2h_no_lowrec->GetCVHistoWithStatError());
+    */
+    // These line and marker styles will be propagated to the 1D plots
+    
+
+    if(doRatio){
+      dataresults[i]->Divide(mcresults[i]);
+      dataresults_statonly[i]->Divide(mcresults[i]);
+      //      mcresults_2p2h[i]->Divide(mcresults[i]);
+      //      mcresults_2p2h_norecoil[i]->Divide(mcresults[i]);
+      //      mcresults_2p2h_norecoil_full[i]->Divide(mcresults[i]);
+      mcresults_qe[i]->Divide(mcresults[i]);
+      mcresults_res[i]->Divide(mcresults[i]);
+      mcresults_dis_dis[i]->Divide(mcresults[i]);
+      mcresults_dis_sis[i]->Divide(mcresults[i]);
+      /*
+      mcresults_qe_proton_fsi[i]->Divide(mcresults[i]);
+      mcresults_qe_neutron_fsi[i]->Divide(mcresults[i]);
+      mcresults_res_proton_fsi[i]->Divide(mcresults[i]);
+      mcresults_res_neutron_fsi[i]->Divide(mcresults[i]);
+
+      mcresults_res_proton_isi[i]->Divide(mcresults[i]);
+      mcresults_res_neutron_isi[i]->Divide(mcresults[i]);
+
+      mcresults_2p2h_nptune[i]->Divide(mcresults[i]);
+      mcresults_2p2h_nntune[i]->Divide(mcresults[i]);
+      mcresults_2p2h_qetune[i]->Divide(mcresults[i]);
+      */
+      mcresults[i]->Divide(mcresults[i]);
+
+
+    }
+
+
+      mcresults[i]->SetLineColor(kRed);
+      mcresults[i]->SetLineWidth(2);
+  
+      //      nomGenie->SetLineColor(kBlue);
+      //      nomGenie->SetLineWidth(2);
+
+      //      bestGenie->SetLineColor(mycolors[10]);
+      //      bestGenie->SetLineWidth(2);
+
+      mcresults_qe[i]->SetLineColor(mycolors[2]);
+      //      mcresults_qe_proton_fsi[i]->SetLineColor(mycolors[2]);
+      //      mcresults_qe_neutron_fsi[i]->SetLineColor(mycolors[2]);
+      //      mcresults_qe_proton_fsi[i]->SetLineStyle(2);
+      //      mcresults_qe_neutron_fsi[i]->SetLineStyle(9);
+      mcresults_res[i]->SetLineColor(mycolors[0]);
+      //      mcresults_res_proton_fsi[i]->SetLineColor(mycolors[1]);
+      //      mcresults_res_neutron_fsi[i]->SetLineColor(mycolors[1]);
+      //      mcresults_res_proton_fsi[i]->SetLineStyle(2);
+      //      mcresults_res_neutron_fsi[i]->SetLineStyle(9);
+
+      /*
+      mcresults_res_proton_isi[i]->SetLineColor(mycolors[1]);
+      mcresults_res_neutron_isi[i]->SetLineColor(mycolors[1]);
+      mcresults_res_proton_isi[i]->SetLineStyle(2);
+      mcresults_res_neutron_isi[i]->SetLineStyle(9);
+
+      mcresults_2p2h_nptune[i]->SetLineColor(mycolors[1]);
+      mcresults_2p2h_nntune[i]->SetLineColor(mycolors[2]);
+      mcresults_2p2h_qetune[i]->SetLineColor(mycolors2[5]);
+      */
+      mcresults_dis_dis[i]->SetLineColor(kViolet-3);
+      mcresults_dis_sis[i]->SetLineColor(mycolors[1]);
+      //      mcresults_2p2h[i]->SetLineColor(mycolors[0]);
+      
+      //      mcresults_2p2h_norecoil[i]->SetLineColor(mycolors[0]);
+      //      mcresults_2p2h_norecoil_full[i]->SetLineColor(mycolors[0]);
+      //      mcresults_2p2h_norecoil_full[i]->SetLineStyle(2);
+      //      mcresults_2p2h_norecoil[i]->SetLineStyle(2);
+      
+      //mcresults_2p2h_no_lowrec->SetLineColor(mycolors[6]);
+      //      mcresults_2p2h_no_lowrec->SetLineStyle(3);
+
+      // These line and marker styles will be propagated to the 1D plots
+      dataresults[i]->SetMarkerStyle(kFullCircle);
+      dataresults[i]->SetMarkerSize(0.7);
+      dataresults[i]->SetLineColor(kBlack);
+      dataresults[i]->SetLineWidth(2);
+
+      dataresults_statonly[i]->SetMarkerStyle(1);
+      dataresults_statonly[i]->SetMarkerSize(100);
+      dataresults_statonly[i]->SetLineColor(kViolet);
+      dataresults_statonly[i]->SetLineWidth(10);
+
+      // dataStat->SetMarkerStyle(1);
+      // dataStat->SetLineColor(kBlack);
+      // dataStat->SetLineWidth(2);
+    
+
+    // Make a list of the histograms we want to draw, along with the
+    // draw options we want to use for them. You can add "graph" to the
+    // draw options if you want the histogram to be converted to a graph
+    // and then drawn. In that case the draw options are interpreted as
+    // options to TGraphErrors::Draw().
+    //
+    // I don't know what happens if you put a "graph" first in the list,
+    // so don't do that. Make sure the first item doesn't have "graph"
+    // in its options
+    std::vector<std::pair<TH2*, const char*> > histAndOpts;
+    histAndOpts.push_back(std::make_pair(dataresults[i], "histpe"));
+    histAndOpts.push_back(std::make_pair(mcresults[i],       "histl"));
+    if(doRecoilFit){
+      //      histAndOpts.push_back(std::make_pair(mcresults_2p2h_nptune[i] , "histl"));
+      //      histAndOpts.push_back(std::make_pair(mcresults_2p2h_nntune[i] , "histl"));
+      //      histAndOpts.push_back(std::make_pair(mcresults_2p2h_qetune[i] , "histl"));
+      //      histAndOpts.push_back(std::make_pair(mcresults_2p2h[i],       "histl"));
+      //      histAndOpts.push_back(std::make_pair(mcresults_2p2h_norecoil_full[i],       "histl"));
+    }
+    else{
+      histAndOpts.push_back(std::make_pair(mcresults_qe[i],       "histl"));
+      histAndOpts.push_back(std::make_pair(mcresults_res[i],       "histl"));
+      histAndOpts.push_back(std::make_pair(mcresults_dis_sis[i],       "histl"));
+      histAndOpts.push_back(std::make_pair(mcresults_dis_dis[i],       "histl"));
+      //      histAndOpts.push_back(std::make_pair(mcresults_2p2h[i],       "histl"));
+      //      if(withlowrecoilremoved) histAndOpts.push_back(std::make_pair(mcresults_2p2h_norecoil[i],       "histl"));
+      /*
+      if(withresfsi){
+	histAndOpts.push_back(std::make_pair(mcresults_res_proton_fsi[i],       "histl"));
+	histAndOpts.push_back(std::make_pair(mcresults_res_neutron_fsi[i],       "histl"));
+	histAndOpts.push_back(std::make_pair(mcresults_2p2h_norecoil[i],       "histl"));
+      }
+
+      if(withresisi){
+	histAndOpts.push_back(std::make_pair(mcresults_res_proton_isi[i],       "histl"));
+	histAndOpts.push_back(std::make_pair(mcresults_res_neutron_isi[i],       "histl"));
+	histAndOpts.push_back(std::make_pair(mcresults_2p2h_norecoil[i],       "histl"));
+      }
+
+      if(withqefsi){
+	histAndOpts.push_back(std::make_pair(mcresults_qe_proton_fsi[i],       "histl"));
+	histAndOpts.push_back(std::make_pair(mcresults_qe_neutron_fsi[i],       "histl"));
+	histAndOpts.push_back(std::make_pair(mcresults_2p2h_norecoil[i],       "histl"));
+	
+      }
+      */
+    }
+    histAndOpts.push_back(std::make_pair(dataresults_statonly[i], "histpe"));
+    histAndOpts.push_back(std::make_pair(dataresults[i],     "graph0 e"));
+
+    cout << "Mults" << endl;
+
+
+  
+    // Example of adding a legend. The co-ordinate system is NDC on the
+    // entire canvas, ie (0,0) in the bottom left corner of the canvas
+    // (not the individual pad), and (1,1) in the top right
+    TLegend* leg=new TLegend(0.8, 0.1, 1, 0.3);
+    leg->SetFillStyle(0);
+    leg->SetBorderSize(0);
+    leg->SetTextSize(0.03);
+    leg->AddEntry(dataresults[i], "MINERvA data", "lpe");
+    leg->AddEntry(mcresults[i], "Minerva Tune v1", "l");
+    if(doRecoilFit){
+      //      leg->AddEntry(mcresults_2p2h_nptune[i], "2p2h nptune", "l");
+      //      leg->AddEntry(mcresults_2p2h_nntune[i], "2p2h nntune", "l");
+      //      leg->AddEntry(mcresults_2p2h_qetune[i], "2p2h qetune", "l");
+      //      leg->AddEntry(mcresults_2p2h_norecoil_full[i],"No 2p2h tune applied","l");
+    }
+    else{
+      leg->AddEntry(mcresults_qe[i], "QE+2p2h", "l");
+      leg->AddEntry(mcresults_res[i], "RES", "l");
+      leg->AddEntry(mcresults_dis_sis[i], "Soft DIS", "l");
+      leg->AddEntry(mcresults_dis_dis[i], "True DIS", "l");
+      //      leg->AddEntry(mcresults_2p2h[i], "2p2h", "l");
+      /*
+      if(withlowrecoilremoved)leg->AddEntry(mcresults_2p2h_norecoil[i],"2p2h without fit","l");
+      if(withresfsi ||withresisi){
+	leg->AddEntry(mcresults_res_proton_fsi[i],"RES proton","l");
+	leg->AddEntry(mcresults_res_neutron_fsi[i],"RES neutron","l");	
+	leg->AddEntry(mcresults_2p2h_norecoil[i],"2p2h without fit","l");
+      }
+      if(withqefsi){
+	leg->AddEntry(mcresults_qe_proton_fsi[i],"QE proton","l");
+	leg->AddEntry(mcresults_qe_neutron_fsi[i],"QE_neutron","l");
+	leg->AddEntry(mcresults_2p2h_norecoil[i],"2p2h without fit","l");
+      }
+      */
+    }
+    
+
+    TLatex mytex;
+    mytex.SetTextSize(0.05);
+    string mystring =     Form("%.2f < %s < %.2f",pz3Dbins[i-1],zaxislabel.c_str(),pz3Dbins[i]);
+      
+
+    // // ----------------------------------------------------------------------------------
+    // //
+    // // Now make pz in bins of pt. It's all the same
+
+    // // Values to multiply each bin by to get them on a similar range
+    vector<double> multiplierspz1 = doRatio?GetScalesRatio(histAndOpts,true,2.5):GetScales(histAndOpts,true,5.49,0.75,false);
+    
+    // // plotXAxis1D fiddles the x axis values to squash up the tail so it
+    // // doesn't take up all the horizontal space.
+    GridCanvas* gc2= NULL;
+
+    if(!doRecoilFit){
+      if(multiplierspz1[0]<0) multiplierspz1[0]=1.0;
+      gc2=plotXAxis1D(histAndOpts, xaxislabel, yaxislabel, doMultipliers||doRatio ? &multiplierspz1[0] : NULL);
+    }
+    else gc2=plotXAxis1D_IgnoreYBins_ReduceXRange(histAndOpts, xaxislabel, yaxislabel, 1,8,0.0,0.4, doMultipliers ? &multiplierspz1[0] : NULL);
+
+    if(doRatio) gc2->SetYLimits(0.01,2.49);
+    else if(doRatio&&doRecoilFit) gc2->SetYLimits(0.41,1.59);
+    else gc2->SetYLimits(0.01, 5.49);
+    if(doZoom) gc2->SetXLimits(0,0.4);
+    if(!doRatio)gc2->SetYTitle(crosssectionlabel.c_str());
+    else gc2->SetYTitle("Ratio to Minerva Tune v1");
+    if(doLog)gc2->SetLogy(true);
+    gc2->Modified();
+    mytex.DrawLatex(0.35,0.96,mystring.c_str());
+    gc2->SetLogx(true);
+    leg->SetX1(0.79);
+    leg->SetY1(0.1);
+    leg->SetX2(1.0);
+    leg->SetY2(0.4);
+    
+    // leg->SetX1(0.15);
+    // leg->SetY1(0.8);
+    // leg->SetX2(0.75);
+    // leg->SetY2(0.93);
+    // leg->SetNColumns(3);
+    leg->Draw("SAME");
+    if(!doLog){
+      if(doZoom){
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d-zoom.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d-zoom.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d-zoom.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d-zoom.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d-zoom.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d-zoom.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+      }
+      else{
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+      }
+    }
+    else{
+
+      if(doZoom){
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d-zoom_log.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d-zoom_log.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d-zoom_log.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d-zoom_log.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d-zoom_log.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d-zoom_log.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+      }
+      else{
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d_log.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d_log.eps",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d_log.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d_log.png",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+	gc2->Print(doMultipliers ? Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz-multiplier_bin_%d_log.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i) : Form("nu-3d-xsec-comps-%s_no2p2Tune-%d_resfsi-%d_qefis-%d_resisi-%d_2p2htunes-%d_ratio-%d-pz_bin_%d_log.C",variableset.c_str(),withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,i));
+      }
+    }
+  }
+}
+
+int main(int argc, char* argv[])
+{
+
+  string s_withlowrecoilremoved = argv[2];
+  string s_withresfsi = argv[3];
+  string s_withqefsi = argv[4];
+  string s_withresisi = argv[5];
+  string s_dorecoilfit = argv[6];
+  string s_ratio = argv[7];
+  string s_zoom = argv[8];
+  string s_iter = argv[9];
+  string s_pzptrec = argv[10];
+
+
+  bool withlowrecoilremoved = s_withlowrecoilremoved=="1" ? true:false;
+  bool withresfsi = s_withresfsi=="1" ? true:false;
+  bool withqefsi = s_withqefsi=="1" ? true:false;
+  bool doRecoilFit = s_dorecoilfit=="1" ? true:false;
+  bool doRatio = s_ratio=="1" ? true:false;
+  bool doZoom = s_zoom=="1" ? true:false;
+  bool withresisi = s_withresisi=="1"? true:false;
+  bool dopzptrec = s_pzptrec=="1"? true:false;
+
+  //  makePlots(true,true);
+  if(!doRatio)makePlots(true,argv[1],false,withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,doZoom, s_iter,dopzptrec);
+  //  makePlots(false,true);
+  else makePlots(false,argv[1],false,withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,doZoom, s_iter,dopzptrec);
+
+
+  //  makePlots(true,true);
+  if(!doRatio) makePlots(true,argv[1],true,withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,doZoom, s_iter,dopzptrec);
+  //  makePlots(false,true);
+  else makePlots(false,argv[1],true,withlowrecoilremoved,withresfsi,withqefsi,withresisi,doRecoilFit,doRatio,doZoom, s_iter,dopzptrec);
+
+  return 0;
+}

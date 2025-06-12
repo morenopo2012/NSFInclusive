@@ -1673,7 +1673,7 @@ double CVUniverse::calcTrackerECALAvEn() const {
   mufuzzTrackerEcal = std::min(mufuzzTrackerEcal, recoilE_tracker_nom+recoilE_ecal_nom);
 
   double recoilE_trackerEcal=(recoilE_tracker_nom+recoilE_ecal_nom) - (subtractMuFuzz ? mufuzzTrackerEcal : 0);
-  double ret = magicEnergyScale*magicEnergyScale*(recoilE_trackerEcal);
+  double ret = magicEnergyScale*(recoilE_trackerEcal);
 
   if(ret<0){
     cerr << "Tracker+ECAL energy is " << ret << ". Bailing" << endl;
